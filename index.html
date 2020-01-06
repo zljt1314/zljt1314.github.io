@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<meta charset="UTF-8">
+	<title>Bootstrap</title>
+	<script src="js/jquery-1.12.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<script type="text/javascript">
+		$(function () {
+			$search = $('#search');
+			$searchList = $('#search_list');
+			$navbarNav = $('.navbar-nav');
+			$navbarNav.delegate("li", "click", function (event) {
+				console.log(event);
+				//					$(this).children().eq() ('active').siblings().removeClass('active');
+			})
+			// 键盘抬起后事件监听
+			$search.keyup(function () {
+				var $val = $(this).val();
+				search($val);
+			})
+
+			$search.blur(function () {
+				$searchList.hide();
+			})
+
+			$search.focus(function () {
+				$searchList.show();
+				var $searchOffset = $search.offset();
+				$searchList.offset({
+					left: $searchOffset.left,
+					top: $searchOffset.top + $search.outerHeight()
+				});
+			})
+
+			$(window).resize(function () {
+				$searchList.hide();
+				$search.focus();
+			})
+
+			$(window).scroll(function () {
+				$searchList.hide();
+			})
+		})
+
+		function search(val) {
+			$.ajax({
+				type: "get",
+				url: "https://sug.so.360.cn/suggest",
+				async: true,
+				dataType: 'jsonp',
+				data: {
+					word: val,
+					ie: "utf-8",
+					encodeout: "utf-8",
+					encodein: "utf-8"
+				}
+			}).done(function (data) {
+				$searchList.slideDown(200);
+				// 先获取当前菜单的位置
+				var $searchOffset = $search.offset();
+				$searchList.offset({
+					left: $searchOffset.left,
+					top: $searchOffset.top + $search.outerHeight()
+				});
+				if (data.s == null || data.s.length == 0) {
+					console.log('data.s是空的');
+					$searchList.empty();
+					$searchList.hide();
+					return;
+				}
+
+				$searchList.empty();
+				for (var i = 0; i < data.s.length; i++) {
+					var $li = $('<li>' + data.s[i] + '</li>');
+					$li.appendTo($searchList);
+				}
+
+
+			}).fail(function () {
+				console.log($search.offset());
+			});
+		}
+	</script>
+</head>
+
+<body>
+	<!--导航栏-->
+	<div class="navbar navbar-inverse navbar-static-top">
+		<div class="container-fluid">
+			<!--logo-->
+			<div class="navbar-header">
+
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+					data-target="#navbar-collapse01" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+
+				<a class="navbar-brand logo" href="#">
+					<img src="img/ios.a014f8a340fb.png" alt="Brand" />
+				</a>
+			</div>
+
+			<!--把导航条所有内容包住-->
+			<div class="collapse navbar-collapse" id="navbar-collapse01">
+				<ul class="nav navbar-nav">
+					<li class="active">
+						<a href="#">首页</a>
+					</li>
+					<li>
+						<a href="#">推荐商品</a>
+					</li>
+					<li>
+						<a href="#">手机生鲜</a>
+					</li>
+					<li>
+						<a href="#">抽奖</a>
+					</li>
+				</ul>
+
+				<form class="navbar-form navbar-right">
+					<!--输入框组-->
+					<div class="input-group">
+						<input id="search" type="text" class="form-control" placeholder="搜索一下" />
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button"><span
+									class="glyphicon glyphicon-search"></span></button>
+						</span>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!--巨幕-->
+	<div class="jumbotron ">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
+					<img class="img-responsive banner_title"
+						src="img/ios-badge.2ac884eb650a.png" />
+					<h3>吃货暑假趴</h3>
+
+					<p>简洁、直观、强悍的前端开发框架，让web开发更迅速、简单。</p>
+				</div>
+				<div class="col-lg-4 col-lg-offset-1 col-md-5 col-md-offset-1">
+					<!--响应式图片-->
+					<img class="img-responsive hidden-xs hidden-sm" src="img/meinv.png" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-3 col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<img class="img-responsive" src="img/adv01.jpg" />
+					<h4>现场采摘活动</h4>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<img class="img-responsive" src="img/adv01.jpg" />
+					<h4>现场采摘活动</h4>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<img class="img-responsive" src="img/adv01.jpg" />
+					<h4>现场采摘活动</h4>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<img class="img-responsive" src="img/adv01.jpg" />
+					<h4>现场采摘活动</h4>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<img class="img-responsive" src="img/adv01.jpg" />
+					<h4>现场采摘活动</h4>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<img class="img-responsive" src="img/adv01.jpg" />
+					<h4>现场采摘活动</h4>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<img class="img-responsive" src="img/adv01.jpg" />
+					<h4>现场采摘活动</h4>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<img class="img-responsive" src="img/adv01.jpg" />
+					<h4>现场采摘活动</h4>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<!-- 写一个banner-->
+	<!-- <div class="container">
+		<ul class="slide_pics">
+			<li><img src="../img/meinv.png" /></li>
+			<li><img src="../img/meinv.png" /></li>
+			<li><img src="../img/meinv.png" /></li>
+			<li><img src="../img/meinv.png" /></li>
+			<li><img src="../img/meinv.png" /></li>
+		</ul>
+		<div class="prev hhh">&lt;</div>
+		<div class="next hhh">&gt;</div>
+		<ul class="points"></ul>
+	</div> -->
+
+	<!--搜索后显示的列表-->
+	<ul id="search_list">
+	</ul>
+</body>
+
+</html>
