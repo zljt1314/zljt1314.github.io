@@ -61,6 +61,11 @@
 					encodein: "utf-8"
 				}
 			}).done(function (data) {
+				//  ctrl + alt + l 选中变量之后，使用这个快捷键生成 console.log
+				//  alt + shift + c 注释所有 console.log
+				//  alt + shift + u 启用所有 console.log
+				//  alt + shift + d 删除所有 console.log
+				console.log("TCL: search -> data", data)
 				$searchList.slideDown(200);
 				// 先获取当前菜单的位置
 				var $searchOffset = $search.offset();
@@ -80,13 +85,13 @@
 					var $li = $('<li>' + data.s[i] + '</li>');
 					$li.appendTo($searchList);
 				}
-
+				
 
 			}).fail(function () {
 				console.log($search.offset());
 			});
 		}
-	</script>
+	</script> 
 </head>
 
 <body>
@@ -144,8 +149,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
-					<img class="img-responsive banner_title"
-						src="img/ios-badge.2ac884eb650a.png" />
+					<img class="img-responsive banner_title" src="img/ios-badge.2ac884eb650a.png" />
 					<h3>吃货暑假趴</h3>
 
 					<p>简洁、直观、强悍的前端开发框架，让web开发更迅速、简单。</p>
