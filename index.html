@@ -1,239 +1,727 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh">
 <head>
-	<meta name="viewport"
-		content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-	<meta charset="UTF-8">
-	<title>Bootstrap</title>
-	<script src="js/jquery-1.12.4.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="css/main.css" />
-	<script type="text/javascript">
-		$(function () {
-			$search = $('#search');
-			$searchList = $('#search_list');
-			$navbarNav = $('.navbar-nav');
-			$navbarNav.delegate("li", "click", function (event) {
-				console.log(event);
-				//					$(this).children().eq() ('active').siblings().removeClass('active');
-			})
-			// 键盘抬起后事件监听
-			$search.keyup(function () {
-				var $val = $(this).val();
-				search($val);
-			})
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To My Beloved 豆芽</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-			$search.blur(function () {
-				$searchList.hide();
-			})
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            perspective: 1000px;
+            background: #000;
+        }
 
-			$search.focus(function () {
-				$searchList.show();
-				var $searchOffset = $search.offset();
-				$searchList.offset({
-					left: $searchOffset.left,
-					top: $searchOffset.top + $search.outerHeight()
-				});
-			})
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(45deg, 
+                #ff9a9e 0%, 
+                #fad0c4 25%, 
+                #ffd1ff 50%, 
+                #a8edea 75%, 
+                #fed6e3 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.8;
+        }
 
-			$(window).resize(function () {
-				$searchList.hide();
-				$search.focus();
-			})
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
 
-			$(window).scroll(function () {
-				$searchList.hide();
-			})
-		})
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite;
+        }
 
-		function search(val) {
-			$.ajax({
-				type: "get",
-				url: "https://sug.so.360.cn/suggest",
-				async: true,
-				dataType: 'jsonp',
-				data: {
-					word: val,
-					ie: "utf-8",
-					encodeout: "utf-8",
-					encodein: "utf-8"
-				}
-			}).done(function (data) {
-				//  ctrl + alt + l 选中变量之后，使用这个快捷键生成 console.log
-				//  alt + shift + c 注释所有 console.log
-				//  alt + shift + u 启用所有 console.log
-				//  alt + shift + d 删除所有 console.log
-				console.log("TCL: search -> data", data)
-				$searchList.slideDown(200);
-				// 先获取当前菜单的位置
-				var $searchOffset = $search.offset();
-				$searchList.offset({
-					left: $searchOffset.left,
-					top: $searchOffset.top + $search.outerHeight()
-				});
-				if (data.s == null || data.s.length == 0) {
-					console.log('data.s是空的');
-					$searchList.empty();
-					$searchList.hide();
-					return;
-				}
+        .sakura {
+            position: absolute;
+            pointer-events: none;
+            animation: fall 10s linear infinite;
+        }
 
-				$searchList.empty();
-				for (var i = 0; i < data.s.length; i++) {
-					var $li = $('<li>' + data.s[i] + '</li>');
-					$li.appendTo($searchList);
-				}
-				
+        .sakura::before {
+            content: '🌸';
+            font-size: 20px;
+            opacity: 0.7;
+        }
 
-			}).fail(function () {
-				console.log($search.offset());
-			});
-		}
-	</script> 
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
+            pointer-events: none;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translate(0, -10%) rotate(0deg);
+            }
+            25% {
+                transform: translate(100px, 25%) rotate(90deg);
+            }
+            50% {
+                transform: translate(-100px, 50%) rotate(180deg);
+            }
+            75% {
+                transform: translate(50px, 75%) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 110%) rotate(360deg);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.1);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: 3.5em;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            opacity: 0;
+            animation: fadeIn 2s ease-in forwards;
+            position: relative;
+        }
+
+        .title::after {
+            content: '❤️';
+            position: absolute;
+            top: -20px;
+            right: -30px;
+            font-size: 0.5em;
+            animation: heartBeat 1s infinite;
+        }
+
+        .sprout-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sprout {
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%234CAF50" d="M12,3C8.69,3 6,5.69 6,9C6,11.1 7.1,13 8.5,14L12,21L15.5,14C16.9,13 18,11.1 18,9C18,5.69 15.31,3 12,3Z"/></svg>') no-repeat center;
+            background-size: contain;
+            animation: grow 3s ease-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .sprout:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .content-section {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            opacity: 0;
+            transform: translateY(50px) rotateX(20deg);
+            transition: all 1s ease;
+            position: relative;
+        }
+
+        .content-section.visible {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: -20px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        .year {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 0.9em;
+            opacity: 0.8;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 1.3em;
+            line-height: 2;
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(0);
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .highlight {
+            color: #ffd1ff;
+            font-weight: bold;
+        }
+
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 2s ease-out forwards;
+            font-size: 24px;
+        }
+
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1) rotate(180deg);
+            background: #ffd1ff;
+        }
+
+        .music-control.playing {
+            animation: rotate 5s linear infinite;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            margin: 20px 0;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button.primary {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+
+        .modal-button.secondary {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .modal-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes grow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(0, -100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .final-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .final-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5em;
+            }
+
+            .message {
+                font-size: 1.1em;
+                padding: 25px;
+            }
+
+            .sprout-container {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-	<!--导航栏-->
-	<div class="navbar navbar-inverse navbar-static-top">
-		<div class="container-fluid">
-			<!--logo-->
-			<div class="navbar-header">
+    <div class="background"></div>
+    <div class="stars"></div>
 
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-					data-target="#navbar-collapse01" aria-expanded="false">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
+    <div class="music-control" onclick="toggleMusic()">🎵</div>
+    <audio id="bgMusic" loop>
+        <source src="https://music.163.com/song/media/outer/url?id=167876.mp3" type="audio/mpeg">
+    </audio>
 
-				<a class="navbar-brand logo" href="#">
-					<img src="img/ios.a014f8a340fb.png" alt="Brand" />
-				</a>
-			</div>
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal" id="messageModal">
+        <div class="modal-content" id="modalContent"></div>
+        <div class="modal-buttons">
+            <button class="modal-button primary" onclick="handleModalResponse(true)">好呀 ❤️</button>
+            <button class="modal-button secondary" onclick="handleModalResponse(false)">再想想</button>
+        </div>
+    </div>
 
-			<!--把导航条所有内容包住-->
-			<div class="collapse navbar-collapse" id="navbar-collapse01">
-				<ul class="nav navbar-nav">
-					<li class="active">
-						<a href="#">首页</a>
-					</li>
-					<li>
-						<a href="#">推荐商品</a>
-					</li>
-					<li>
-						<a href="#">手机生鲜</a>
-					</li>
-					<li>
-						<a href="#">抽奖</a>
-					</li>
-				</ul>
+    <div class="container">
+        <section class="header">
+            <h1 class="title">To My Beloved 豆芽</h1>
+        </section>
 
-				<form class="navbar-form navbar-right">
-					<!--输入框组-->
-					<div class="input-group">
-						<input id="search" type="text" class="form-control" placeholder="搜索一下" />
-						<span class="input-group-btn">
-							<button class="btn btn-default" type="button"><span
-									class="glyphicon glyphicon-search"></span></button>
-						</span>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!--巨幕-->
-	<div class="jumbotron ">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1">
-					<img class="img-responsive banner_title" src="img/ios-badge.2ac884eb650a.png" />
-					<h3>吃货暑假趴</h3>
+        <section class="content-section">
+            <div class="timeline-dot"></div>
+            <div class="year">高中时光</div>
+            <div class="message">
+                <p>亲爱的豆芽：</p>
+                <p>还记得那年的<span class="highlight">高中时光</span>，</p>
+                <p>我们在青春的课堂上相遇，</p>
+                <p>你的笑容像初升的太阳一样温暖。</p>
+            </div>
+        </section>
 
-					<p>简洁、直观、强悍的前端开发框架，让web开发更迅速、简单。</p>
-				</div>
-				<div class="col-lg-4 col-lg-offset-1 col-md-5 col-md-offset-1">
-					<!--响应式图片-->
-					<img class="img-responsive hidden-xs hidden-sm" src="img/meinv.png" />
-				</div>
-			</div>
-		</div>
-	</div>
+        <section class="content-section">
+            <div class="timeline-dot"></div>
+            <div class="year">大学岁月</div>
+            <div class="message">
+                <p>命运对我们如此眷顾，</p>
+                <p>大学时我们依然<span class="highlight">携手同行</span>，</p>
+                <p>那些一起奋斗的日子，</p>
+                <p>是我最珍贵的回忆。</p>
+            </div>
+        </section>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-3 col-md-3 col-sm-6">
-				<div class="thumbnail">
-					<img class="img-responsive" src="img/adv01.jpg" />
-					<h4>现场采摘活动</h4>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6">
-				<div class="thumbnail">
-					<img class="img-responsive" src="img/adv01.jpg" />
-					<h4>现场采摘活动</h4>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6">
-				<div class="thumbnail">
-					<img class="img-responsive" src="img/adv01.jpg" />
-					<h4>现场采摘活动</h4>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6">
-				<div class="thumbnail">
-					<img class="img-responsive" src="img/adv01.jpg" />
-					<h4>现场采摘活动</h4>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6">
-				<div class="thumbnail">
-					<img class="img-responsive" src="img/adv01.jpg" />
-					<h4>现场采摘活动</h4>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6">
-				<div class="thumbnail">
-					<img class="img-responsive" src="img/adv01.jpg" />
-					<h4>现场采摘活动</h4>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6">
-				<div class="thumbnail">
-					<img class="img-responsive" src="img/adv01.jpg" />
-					<h4>现场采摘活动</h4>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6">
-				<div class="thumbnail">
-					<img class="img-responsive" src="img/adv01.jpg" />
-					<h4>现场采摘活动</h4>
-				</div>
-			</div>
+        <section class="content-section">
+            <div class="timeline-dot"></div>
+            <div class="year">异地时光</div>
+            <div class="message">
+                <p>毕业后我去了北京，</p>
+                <p>而你在郑州等待着我，</p>
+                <p>思念让我明白，</p>
+                <p>你就是我生命中<span class="highlight">最重要的人</span>。</p>
+            </div>
+        </section>
 
-		</div>
-	</div>
+        <section class="content-section">
+            <div class="timeline-dot"></div>
+            <div class="year">回到身边</div>
+            <div class="message">
+                <p>所以我毅然决定回到郑州，</p>
+                <p>因为我知道，</p>
+                <p>世界再大，</p>
+                <p>也不及<span class="highlight">有你的城市</span>。</p>
+            </div>
+        </section>
 
+        <section class="content-section">
+            <div class="timeline-dot"></div>
+            <div class="year">幸福时刻</div>
+            <div class="message">
+                <p>前年，我们终于<span class="highlight">携手步入婚姻的殿堂</span>，</p>
+                <p>从此，生活更加美好，</p>
+                <p>每一个清晨醒来，</p>
+                <p>都充满了感激与幸福。</p>
+            </div>
+        </section>
 
-	<!-- 写一个banner-->
-	<!-- <div class="container">
-		<ul class="slide_pics">
-			<li><img src="../img/meinv.png" /></li>
-			<li><img src="../img/meinv.png" /></li>
-			<li><img src="../img/meinv.png" /></li>
-			<li><img src="../img/meinv.png" /></li>
-			<li><img src="../img/meinv.png" /></li>
-		</ul>
-		<div class="prev hhh">&lt;</div>
-		<div class="next hhh">&gt;</div>
-		<ul class="points"></ul>
-	</div> -->
+        <section class="content-section">
+            <div class="timeline-dot"></div>
+            <div class="year">此时此刻</div>
+            <div class="message">
+                <p>亲爱的豆芽老婆，</p>
+                <p>感谢你一路相伴，</p>
+                <p>让我们的故事，</p>
+                <p>继续<span class="highlight">书写更多美好的篇章</span>。</p>
+                <p>我永远爱你！❤️</p>
+            </div>
+        </section>
+    </div>
 
-	<!--搜索后显示的列表-->
-	<ul id="search_list">
-	</ul>
+    <div class="sprout-container" onclick="sproutClick()">
+        <div class="sprout"></div>
+    </div>
+
+    <script>
+        // 创建星星
+        function createStars() {
+            const stars = document.querySelector('.stars');
+            const count = 100;
+            
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // 随机位置
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                // 随机大小
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                
+                // 随机动画延迟
+                star.style.animationDelay = Math.random() * 1 + 's';
+                
+                stars.appendChild(star);
+            }
+        }
+
+        // 创建樱花
+        function createSakura() {
+            const sakura = document.createElement('div');
+            sakura.className = 'sakura';
+            
+            // 随机起始位置
+            sakura.style.left = Math.random() * 100 + '%';
+            sakura.style.top = '-20px';
+            
+            // 随机大小
+            const scale = Math.random() * 0.5 + 0.5;
+            sakura.style.transform = `scale(${scale})`;
+            
+            // 随机动画时长
+            const duration = Math.random() * 5 + 5;
+            sakura.style.animationDuration = duration + 's';
+            
+            document.body.appendChild(sakura);
+            
+            setTimeout(() => {
+                sakura.remove();
+            }, duration * 1000);
+        }
+
+        // 创建气泡
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            
+            // 随机大小和位置
+            const size = Math.random() * 50 + 20;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.bottom = '-100px';
+            
+            // 随机动画时长和延迟
+            const duration = Math.random() * 4 + 4;
+            bubble.style.animationDuration = duration + 's';
+            bubble.style.animationDelay = Math.random() * 2 + 's';
+            
+            document.body.appendChild(bubble);
+            
+            setTimeout(() => {
+                bubble.remove();
+            }, (duration + 2) * 1000);
+        }
+
+        // 初始化
+        createStars();
+        setInterval(createSakura, 300);
+        setInterval(createBubble, 1000);
+
+        // 监听滚动事件
+        function checkScroll() {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (sectionTop < windowHeight * 0.75) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkScroll);
+        checkScroll();
+
+        // 点击屏幕创建爱心
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('music-control')) return;
+            
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.style.left = e.clientX + 'px';
+            heart.style.top = e.clientY + 'px';
+            heart.innerHTML = '❤️';
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 2000);
+        });
+
+        // 背景音乐控制
+        const bgMusic = document.getElementById('bgMusic');
+        const musicControl = document.querySelector('.music-control');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicControl.classList.remove('playing');
+            } else {
+                bgMusic.play();
+                musicControl.classList.add('playing');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 点击豆芽的效果
+        function sproutClick() {
+            const sprout = document.querySelector('.sprout');
+            sprout.style.transform = 'scale(1.3) rotate(10deg)';
+            setTimeout(() => {
+                sprout.style.transform = '';
+            }, 300);
+
+            // 创建一圈爱心
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                const angle = (i / 8) * Math.PI * 2;
+                const x = 100 * Math.cos(angle);
+                const y = 100 * Math.sin(angle);
+                heart.style.left = (window.innerWidth / 2 + x) + 'px';
+                heart.style.top = (window.innerHeight - 100 + y) + 'px';
+                heart.innerHTML = '❤️';
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 2000);
+            }
+        }
+
+        // 显示自定义弹窗
+        function showModal(content) {
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modalOverlay').classList.add('show');
+            document.getElementById('messageModal').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+            document.getElementById('messageModal').classList.remove('show');
+        }
+
+        // 处理弹窗响应
+        function handleModalResponse(accepted) {
+            if (accepted) {
+                showModal('太好了！我们要永远在一起！❤️<br>我会一直爱你，保护你，陪伴你！');
+                // 创建烟花效果
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.className = 'heart';
+                        heart.style.left = Math.random() * window.innerWidth + 'px';
+                        heart.style.top = Math.random() * window.innerHeight + 'px';
+                        heart.innerHTML = '❤️';
+                        document.body.appendChild(heart);
+                        
+                        setTimeout(() => {
+                            heart.remove();
+                        }, 2000);
+                    }, i * 100);
+                }
+            } else {
+                showModal('没关系，我会继续努力让你更爱我！❤️');
+            }
+            setTimeout(hideModal, 3000);
+        }
+    </script>
 </body>
-
-</html>
+</html> 
